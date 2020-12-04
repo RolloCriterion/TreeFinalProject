@@ -12,7 +12,7 @@ public class UserEntity {
     private String nome;
     private String surname;
     private Date birthDate;
-    private Gender gender;
+    private String gender;
     private String password;
 
     public String getUsername() {
@@ -43,10 +43,10 @@ public class UserEntity {
         this.birthDate = birthDate;
     }
 
-    public Gender getGender() {
+    public String getGender() {
         return gender;
     }
-    public void setGender(Gender gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 

@@ -1,7 +1,5 @@
 package com.finalproject.views;
 
-import com.finalproject.entities.Gender;
-
 import java.util.Date;
 
 public class UserView {
