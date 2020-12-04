@@ -15,8 +15,13 @@ public class UserService {
     @Autowired UserRepo userRepo;
     @Autowired EventRepo eventRepo;
 
-    public String criptPassword(UserEntity user){
-        return user.setPassword(securityService.computeHash(user.getPassword()));
+    public UserView signin(UserView userView){
+        if(userRepo.findUserEntityByUsername(userView.getUsername())==null){
+            userView.setPassword(securityService.computeHash(userView.getPassword()));
+            userRepo.save(convertFromViewToEntity(userView));
+            return userView;
+        }
+        return null;
     }
 
     public void convertFromEntityToView(UserEntity userEntity){
@@ -28,7 +33,7 @@ public class UserService {
                 userEntity.getPassword());
     }
 
-    public void convertFromViewToEntity(UserView userView){
+    public UserEntity convertFromViewToEntity(UserView userView){
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(userView.getUsername());
         userEntity.setName(userView.getName());
@@ -36,5 +41,6 @@ public class UserService {
         userEntity.setBirthDate(userView.getBirthDate());
         userEntity.setGender(userView.getGender().name());
         userEntity.setPassword(userView.getPassword());
+        return userEntity;
     }
 }

@@ -6,6 +6,7 @@ import com.finalproject.repo.EventRepo;
 import com.finalproject.repo.UserRepo;
 import com.finalproject.services.EventService;
 import com.finalproject.services.UserService;
+import com.finalproject.views.UserView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +17,10 @@ public class EndPoints {
 
     @Autowired UserService userService;
     @Autowired EventService eventService;
-    @Autowired UserRepo userRepo;
-    @Autowired EventRepo eventRepo;
 
     @PostMapping("/user")
-    public String signUpUser(@RequestBody UserEntity userEntity){
-        return "Registra un utente alla piattaforma";
+    public UserView signUpUser(@RequestBody UserView userView){
+        return userService.signin(userView);
     }
 
     @GetMapping("/login")
