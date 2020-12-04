@@ -24,7 +24,7 @@ public class UserService {
                 userEntity.getName(),
                 userEntity.getSurname(),
                 userEntity.getBirthDate(),
-                Enum.valueOf(Gender.class, userEntity.getGender()),
+                Gender.valueOf(userEntity.getGender()),
                 userEntity.getPassword());
     }
 
