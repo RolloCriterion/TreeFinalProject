@@ -5,7 +5,7 @@ import javax.persistence.Id;
 import java.util.Date;
 
 @Entity
-public class User {
+public class UserEntity {
 
     @Id
     private String username;
@@ -56,8 +56,4 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-}
-
-enum Gender{
-    MALE, FEMALE, OTHER;
 }
