@@ -1,4 +1,4 @@
-package com.finalproject;
+package com.finalproject.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -57,4 +57,5 @@ public class EventEntity {
     public void setCapacity(Integer capacity) {
         this.capacity = capacity;
     }
+    
 }

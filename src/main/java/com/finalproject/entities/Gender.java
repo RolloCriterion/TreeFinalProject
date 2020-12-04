@@ -1,4 +1,4 @@
-package com.finalproject;
+package com.finalproject.entities;
 
 public enum Gender {
     MALE, FEMALE, OTHER;
