@@ -1,11 +1,8 @@
 package com.finalproject;
 
-import com.finalproject.entities.EventEntity;
-import com.finalproject.entities.UserEntity;
-import com.finalproject.repo.EventRepo;
-import com.finalproject.repo.UserRepo;
 import com.finalproject.services.EventService;
 import com.finalproject.services.UserService;
+import com.finalproject.views.EventView;
 import com.finalproject.views.UserView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +42,7 @@ public class EndPoints {
     }
 
     @PostMapping("/event")
-    public String createEvent(@RequestBody EventEntity eventEntity, @CookieValue("username") String usernname){
+    public String createEvent(@RequestBody EventView eventView, @CookieValue("username") String usernname){
         return "Crea un evento sulla piattaforma";
     }
 
@@ -60,7 +57,7 @@ public class EndPoints {
     }
 
     @GetMapping("/user/events")
-    public List<EventService> getUserEvents(@RequestBody EventEntity eventEntity, @CookieValue("username") String usernname){
+    public List<EventService> getUserEvents(@RequestBody EventView eventView, @CookieValue("username") String usernname){
         //Restituisce una lista con gli eventi creati dall'utente e quelli a cui ha partecipato. Solo gli eventi futuri, non quelli passati
         return null;
     }

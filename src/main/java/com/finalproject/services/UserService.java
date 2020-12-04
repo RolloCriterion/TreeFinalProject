@@ -1,7 +1,6 @@
 package com.finalproject.services;
 
 import com.finalproject.entities.UserEntity;
-import com.finalproject.repo.EventRepo;
 import com.finalproject.repo.UserRepo;
 import com.finalproject.views.Gender;
 import com.finalproject.views.UserView;
@@ -13,7 +12,6 @@ public class UserService {
 
     @Autowired SecurityService securityService;
     @Autowired UserRepo userRepo;
-    @Autowired EventRepo eventRepo;
 
     public UserView signin(UserView userView){
         if(userRepo.findUserEntityByUsername(userView.getUsername())==null){
