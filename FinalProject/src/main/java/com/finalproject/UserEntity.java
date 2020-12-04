@@ -57,7 +57,3 @@ public class UserEntity {
         this.password = password;
     }
 }
-
-enum Gender{
-    MALE, FEMALE, OTHER;
-}
