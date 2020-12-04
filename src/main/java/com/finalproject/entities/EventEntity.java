@@ -2,6 +2,8 @@ package com.finalproject.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.sql.Timestamp;
 import java.util.UUID;
 
@@ -10,11 +12,14 @@ public class EventEntity {
 
     @Id
     private UUID eventid;
-    private Boolean owned;
+
+    @ManyToOne
+    private UserEntity user;
+
     private String name;
     private Timestamp date;
     private String place;
-    private  Integer capacity;
+    private Integer capacity;
 
     public UUID getEventid() {
         return eventid;
@@ -23,11 +28,12 @@ public class EventEntity {
         this.eventid = eventid;
     }
 
-    public Boolean getOwned() {
-        return owned;
+    public UserEntity getUser() {
+        return user;
     }
-    public void setOwned(Boolean owned) {
-        this.owned = owned;
+
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 
     public String getName() {
