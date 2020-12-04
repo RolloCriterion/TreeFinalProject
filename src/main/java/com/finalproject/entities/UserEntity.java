@@ -9,7 +9,7 @@ public class UserEntity {
 
     @Id
     private String username;
-    private String nome;
+    private String name;
     private String surname;
     private Date birthDate;
     private String gender;
@@ -22,11 +22,11 @@ public class UserEntity {
         this.username = username;
     }
 
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getSurname() {
@@ -54,6 +54,6 @@ public class UserEntity {
         return password;
     }
     public String setPassword(String password) {
-        return password;
+        return this.password=password;
     }
 }

@@ -4,15 +4,15 @@ import java.util.Date;
 
 public class UserView {
     private String username;
-    private String nome;
+    private String name;
     private String surname;
     private Date birthDate;
     private Gender gender;
     private String password;
 
-    public UserView(String username, String nome, String surname, Date birthDate, Gender gender, String password) {
+    public UserView(String username, String name, String surname, Date birthDate, Gender gender, String password) {
         this.username = username;
-        this.nome = nome;
+        this.name = name;
         this.surname = surname;
         this.birthDate = birthDate;
         this.gender = gender;
@@ -27,12 +27,12 @@ public class UserView {
         this.username = username;
     }
 
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getSurname() {
