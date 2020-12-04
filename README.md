@@ -1,9 +1,6 @@
 ![TreeSchool](./assets/treeschool_header.png)
 
-<p align="center">
-# Corso Back-End 2020 (Tree School)
-# Progetto finale
-</p>
+# Corso Back-End 2020 (Tree School) - Progetto finale
 
 ## Teams:
 
@@ -12,3 +9,4 @@
 * Giuseppe Tegano
 * Marco Maniaci
 * Silvia Frasson
+* Sonia Cristarella
