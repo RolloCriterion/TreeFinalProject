@@ -14,7 +14,7 @@ public class EventEntity {
     private UUID eventid;
 
     @ManyToOne
-    private UserEntity user;
+    private UserEntity owner;
 
     private String name;
     private Timestamp date;
@@ -28,12 +28,12 @@ public class EventEntity {
         this.eventid = eventid;
     }
 
-    public UserEntity getUser() {
-        return user;
+    public UserEntity getOwner() {
+        return owner;
     }
 
-    public void setUser(UserEntity user) {
-        this.user = user;
+    public void setOwner(UserEntity owner) {
+        this.owner = owner;
     }
 
     public String getName() {
