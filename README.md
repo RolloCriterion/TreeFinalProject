@@ -1,8 +1,11 @@
+# Corso Back-End 2020 (Tree School)
 ![TreeSchool](./assets/treeschool_header.png)
 
-# Corso Back-End 2020 (Tree School) - Progetto finale
+# Progetto finale
 
-## Teams:
+[Link del progetto da realizzare.](https://github.com/Jaeger87/CorsoTree2020/tree/master/Final_project)
+
+## Team:
 
 * Aldo Pallucci
 * Davide Del Buono
