@@ -2,6 +2,8 @@ package com.finalproject;
 
 import com.finalproject.entities.EventEntity;
 import com.finalproject.entities.UserEntity;
+import com.finalproject.repo.EventRepo;
+import com.finalproject.repo.UserRepo;
 import com.finalproject.services.EventService;
 import com.finalproject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +14,10 @@ import java.util.List;
 @RestController
 public class EndPoints {
 
-    @Autowired UserService us;
+    @Autowired UserService userService;
+    @Autowired EventService eventService;
+    @Autowired UserRepo userRepo;
+    @Autowired EventRepo eventRepo;
 
     @PostMapping("/user")
     public String signUpUser(@RequestBody UserEntity userEntity){
