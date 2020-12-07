@@ -1,6 +1,7 @@
 package com.finalproject.entities;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -23,7 +24,7 @@ public class UserEntity {
     @JoinTable(name = "user_event",
             joinColumns = @JoinColumn(name = "username"),
             inverseJoinColumns = @JoinColumn(name = "eventid"))
-    private List<EventEntity> eventEntityList;
+    private List<EventEntity> eventEntityList = new ArrayList<>();
 
     public void addEvent(EventEntity eventEntity) {
         eventEntityList.add(eventEntity);

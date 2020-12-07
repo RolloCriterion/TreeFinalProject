@@ -75,6 +75,7 @@ public class EventService {
         UserEntity userEntity = userRepo.findUserEntityByUsername(username);
         EventEntity eventEntity = new EventEntity();
         eventEntity.setEventid(eventView.getEventid());
+        eventEntity.setPlace(eventView.getPlace());
         eventEntity.setName(eventView.getName());
         eventEntity.setDate(eventView.getDate());
         eventEntity.setOwner(userEntity);

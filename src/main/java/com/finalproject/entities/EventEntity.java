@@ -2,6 +2,7 @@ package com.finalproject.entities;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -21,7 +22,7 @@ public class EventEntity {
     private Integer capacity;
 
     @ManyToMany(mappedBy = "eventEntityList")
-    private List<UserEntity> userEntityList;
+    private List<UserEntity> userEntityList = new ArrayList<>();
 
     public List<UserEntity> getUserEntityList() {
         return userEntityList;
