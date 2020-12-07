@@ -7,29 +7,30 @@ import java.util.UUID;
 public class EventView {
     private UUID eventid;
     private Boolean owned;
+    private Boolean joined;
     private String name;
     private Timestamp date;
     private String place;
     private Integer capacity;
 
-    public EventView(UUID eventid, Boolean owned, String name, Timestamp date, String place, Integer capacity) {
+    public EventView(UUID eventid, Boolean owned, Boolean joined, String name, Timestamp date, String place, Integer capacity) {
         this.eventid = Objects.requireNonNullElseGet(eventid, UUID::randomUUID);
         this.owned = owned;
+        this.joined = joined;
         this.name = name;
         this.date = date;
         this.place = place;
         this.capacity = capacity;
     }
-/*
-    public EventView(Boolean owned, String name, Timestamp date, String place, Integer capacity) {
-            this.eventid = UUID.randomUUID();
-            this.owned = owned;
-            this.name = name;
-            this.date = date;
-            this.place = place;
-            this.capacity = capacity;
-        }
- */
+
+
+    public Boolean getJoined() {
+        return joined;
+    }
+
+    public void setJoined(Boolean joined) {
+        this.joined = joined;
+    }
 
     public UUID getEventid() {
         return eventid;

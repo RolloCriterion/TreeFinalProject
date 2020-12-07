@@ -34,6 +34,16 @@ public class EventService {
         }
     }
 
+    public List<EventView> getUserEvents(String username){
+        if(cookieRepo.existsById(username)){
+            List<EventEntity> eventEntityList = eventRepo.findAllByDateIsAfter(Timestamp.valueOf(LocalDateTime.now()));
+            UserEntity userEntity = userRepo.findUserEntityByUsername(username);
+            return eventEntityList.stream().filter(e->e.getUserEntityList().contains(userEntity)).map(e->convertFromEntityToView(e, username)).collect(Collectors.toList());
+        }else{
+            return null;
+        }
+    }
+
     public EventView joinEvent(UUID eventid, String username) throws ImpossibleToJoinEventException {
         if(cookieRepo.existsById(username)){
             if(eventRepo.existsById(eventid)){
@@ -83,10 +93,13 @@ public class EventService {
 
     public EventView convertFromEntityToView(EventEntity eventEntity, String username){
 
+        UserEntity userEntity = userRepo.findUserEntityByUsername(username);
         Boolean owned = eventEntity.getOwner().getUsername().equals(username);
+        Boolean joined = eventEntity.getUserEntityList().contains(userEntity);
 
         return new EventView(eventEntity.getEventid(),
                 owned,
+                joined,
                 eventEntity.getName(),
                 eventEntity.getDate(),
                 eventEntity.getPlace(),
