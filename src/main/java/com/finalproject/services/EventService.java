@@ -1,21 +1,18 @@
 package com.finalproject.services;
 
+import com.finalproject.exceptions.ImpossibileToCreateEventException;
+import com.finalproject.exceptions.ImpossibleToJoinEventException;
 import com.finalproject.entities.EventEntity;
 import com.finalproject.entities.UserEntity;
 import com.finalproject.repo.CookieRepo;
 import com.finalproject.repo.EventRepo;
 import com.finalproject.repo.UserRepo;
 import com.finalproject.views.EventView;
-import com.finalproject.views.Gender;
-import com.finalproject.views.UserView;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.Cookie;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -35,7 +32,7 @@ public class EventService {
         }
     }
 
-    public EventView joinEvent(UUID eventid, String username){
+    public EventView joinEvent(UUID eventid, String username) throws ImpossibleToJoinEventException {
         if(cookieRepo.existsById(username)){
             if(eventRepo.existsById(eventid)){
                 UserEntity userEntity = userRepo.findUserEntityByUsername(username);
@@ -45,18 +42,22 @@ public class EventService {
                 return convertFromEntityToView(eventEntity, username);
             }
         }
-        return null;
+        throw new ImpossibleToJoinEventException();
     }
 
-    public EventView createEvent(EventView eventView, String cookieUser){
+    public EventView createEvent(EventView eventView, String cookieUser) throws ImpossibileToCreateEventException, ImpossibleToJoinEventException {
         if(cookieRepo.existsById(cookieUser)){
             if(!eventRepo.existsById(eventView.getEventid())){
                 EventEntity eventEntity = convertFromViewToEntity(eventView, cookieUser);
                 eventRepo.save(eventEntity);
-                return joinEvent(eventView.getEventid(), cookieUser);
+                try {
+                    return joinEvent(eventView.getEventid(), cookieUser);
+                }catch (ImpossibleToJoinEventException e){
+                    throw new ImpossibleToJoinEventException();
+                }
             }
         }
-        return null;
+        throw new ImpossibileToCreateEventException();
     }
 
     public EventView convertFromEntityToView(EventEntity eventEntity, String username){

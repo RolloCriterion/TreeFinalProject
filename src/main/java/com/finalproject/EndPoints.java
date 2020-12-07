@@ -1,10 +1,11 @@
 package com.finalproject;
 
+import com.finalproject.exceptions.ImpossibileToCreateEventException;
+import com.finalproject.exceptions.ImpossibleToJoinEventException;
 import com.finalproject.services.EventService;
 import com.finalproject.services.UserService;
 import com.finalproject.views.EventView;
 import com.finalproject.views.UserView;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +54,11 @@ public class EndPoints {
 
     @PostMapping("/join/{eventid}")
     public ResponseEntity<EventView> joinEvent(@PathVariable("eventid") UUID eventId, @CookieValue("username") String username){
-        return new ResponseEntity<>(eventService.joinEvent(eventId, username), HttpStatus.CREATED);
+        try {
+            return new ResponseEntity<>(eventService.joinEvent(eventId, username), HttpStatus.CREATED);
+        }catch (ImpossibleToJoinEventException e){
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
     }
 
     @PostMapping("/unjoin/{eventid}")
@@ -63,11 +68,10 @@ public class EndPoints {
     }
 
     @PostMapping("/event")
-    public ResponseEntity<EventView> createEvent(@RequestBody EventView eventView, @CookieValue("username") String username){
-        EventView eventViewNew = eventService.createEvent(eventView, username);
-        if(eventViewNew != null){
-            return new ResponseEntity<>(eventViewNew, HttpStatus.CREATED);
-        }else{
+    public ResponseEntity<EventView> createEvent(@RequestBody EventView eventView, @CookieValue("username") String username) {
+        try {
+            return new ResponseEntity<>(eventService.createEvent(eventView, username), HttpStatus.CREATED);
+        } catch (ImpossibileToCreateEventException | ImpossibleToJoinEventException e) {
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
     }
