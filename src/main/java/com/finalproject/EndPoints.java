@@ -58,7 +58,8 @@ public class EndPoints {
 
     @PostMapping("/unjoin/{eventid}")
     public ResponseEntity<EventView> unjoinEvent(@PathVariable("eventid") String eventId, @CookieValue("username") String usernname){
-        return new ResponseEntity<>(eventService.unjoinEvent(eventId, usernname), HttpStatus.CREATED);
+        //return new ResponseEntity<>(eventService.unjoinEvent(eventId, usernname), HttpStatus.CREATED);
+        return null;
     }
 
     @PostMapping("/event")
@@ -73,16 +74,19 @@ public class EndPoints {
 
     @GetMapping("/event/{eventid}")
     public ResponseEntity<EventView> getEventDetails(@PathVariable("eventid") String eventId, @CookieValue("username") String usernname){
-        return new ResponseEntity<>(eventService.getEventDetails(eventId, usernname), HttpStatus.CREATED);
+        //return new ResponseEntity<>(eventService.getEventDetails(eventId, usernname), HttpStatus.CREATED);
+        return null;
     }
 
     @DeleteMapping("/event/{eventid}")
     public ResponseEntity<EventView> cancelEvent(@PathVariable("eventid") String eventId, @CookieValue("username") String usernname){
-        return new ResponseEntity<>(eventService.cancelEvent(eventId, usernname), HttpStatus.CREATED);
+        //return new ResponseEntity<>(eventService.cancelEvent(eventId, usernname), HttpStatus.CREATED);
+        return null;
     }
 
     @GetMapping("/user/events")
     public ResponseEntity<List<EventView>> getUserEvents(@CookieValue("username") String usernname){
-        return new ResponseEntity<>(eventService.getUserEvents(usernname), HttpStatus.CREATED);;
+        //return new ResponseEntity<>(eventService.getUserEvents(usernname), HttpStatus.CREATED);;
+        return null;
     }
 }

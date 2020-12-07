@@ -48,6 +48,17 @@ public class EventService {
         return null;
     }
 
+    public EventView createEvent(EventView eventView, String cookieUser){
+        if(cookieRepo.existsById(cookieUser)){
+            if(!eventRepo.existsById(eventView.getEventid())){
+                EventEntity eventEntity = convertFromViewToEntity(eventView, cookieUser);
+                eventRepo.save(eventEntity);
+                return joinEvent(eventView.getEventid(), cookieUser);
+            }
+        }
+        return null;
+    }
+
     public EventView convertFromEntityToView(EventEntity eventEntity, String username){
 
         Boolean owned = eventEntity.getOwner().getUsername().equals(username);
