@@ -1,6 +1,7 @@
 package com.finalproject.views;
 
 import java.sql.Timestamp;
+import java.util.Objects;
 import java.util.UUID;
 
 public class EventView {
@@ -12,20 +13,30 @@ public class EventView {
     private Integer capacity;
 
     public EventView(UUID eventid, Boolean owned, String name, Timestamp date, String place, Integer capacity) {
-        this.eventid = eventid;
+        this.eventid = Objects.requireNonNullElseGet(eventid, UUID::randomUUID);
         this.owned = owned;
         this.name = name;
         this.date = date;
         this.place = place;
         this.capacity = capacity;
     }
+/*
+    public EventView(Boolean owned, String name, Timestamp date, String place, Integer capacity) {
+            this.eventid = UUID.randomUUID();
+            this.owned = owned;
+            this.name = name;
+            this.date = date;
+            this.place = place;
+            this.capacity = capacity;
+        }
+ */
 
     public UUID getEventid() {
         return eventid;
     }
 
-    public void setEventid(UUID eventid) {
-        this.eventid = eventid;
+    public void setEventid() {
+        this.eventid = UUID.randomUUID();
     }
 
     public String getName() {
