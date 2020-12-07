@@ -5,13 +5,15 @@ import java.util.UUID;
 
 public class EventView {
     private UUID eventid;
+    private Boolean owned;
     private String name;
     private Timestamp date;
     private String place;
     private Integer capacity;
 
-    public EventView(UUID eventid, String name, Timestamp date, String place, Integer capacity) {
+    public EventView(UUID eventid, Boolean owned, String name, Timestamp date, String place, Integer capacity) {
         this.eventid = eventid;
+        this.owned = owned;
         this.name = name;
         this.date = date;
         this.place = place;

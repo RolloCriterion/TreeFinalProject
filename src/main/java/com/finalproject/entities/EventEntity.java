@@ -1,10 +1,9 @@
 package com.finalproject.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -20,6 +19,17 @@ public class EventEntity {
     private Timestamp date;
     private String place;
     private Integer capacity;
+
+    @ManyToMany(mappedBy = "eventEntityList")
+    private List<UserEntity> userEntityList;
+
+    public List<UserEntity> getUserEntityList() {
+        return userEntityList;
+    }
+
+    public void setUserEntityList(List<UserEntity> userEntityList) {
+        this.userEntityList = userEntityList;
+    }
 
     public UUID getEventid() {
         return eventid;
@@ -63,5 +73,17 @@ public class EventEntity {
     public void setCapacity(Integer capacity) {
         this.capacity = capacity;
     }
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EventEntity that = (EventEntity) o;
+        return Objects.equals(eventid, that.eventid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(eventid);
+    }
 }

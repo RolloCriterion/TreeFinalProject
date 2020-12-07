@@ -4,10 +4,16 @@ import com.finalproject.services.EventService;
 import com.finalproject.services.UserService;
 import com.finalproject.views.EventView;
 import com.finalproject.views.UserView;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class EndPoints {
@@ -16,24 +22,33 @@ public class EndPoints {
     @Autowired EventService eventService;
 
     @PostMapping("/user")
-    public UserView signUpUser(@RequestBody UserView userView){
-        return userService.signin(userView);
+    public ResponseEntity<UserView> signUpUser(@RequestBody UserView userView, HttpServletResponse response){
+        Cookie cookie = new Cookie("username", userView.getUsername());
+        response.addCookie(cookie);
+        return new ResponseEntity<>(userService.signin(userView, cookie), HttpStatus.CREATED);
     }
 
     @GetMapping("/login")
-    public String logIn(@RequestParam(name="username") String username, @RequestParam(name="password") String password){
-        return "Verifica la corrispondenza di email e password e restituisce l'utente corrispondente";
+    public ResponseEntity<UserView> logIn(@RequestParam(name="username") String username, @RequestParam(name="password") String password, HttpServletResponse response){
+        Cookie cookie = new Cookie("username", username);
+        UserView userView = userService.login(username, password, cookie);
+        if(userView != null){
+            response.addCookie(cookie);
+            return new ResponseEntity<>(userView, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
+
     }
 
     @GetMapping("/events")
-    public List<EventService> getActiveEvents(@CookieValue("username") String usernname){
-        //Restituisce gli eventi disponibili a cui l'utente può registrarsi
-        return null;
+    public ResponseEntity<List<EventView>> getActiveEvents(@CookieValue("username") String username){
+        return new ResponseEntity<>(eventService.getActiveEvents(username), HttpStatus.OK);
     }
 
     @PostMapping("/join/{eventid}")
-    public String joinEvent(@PathVariable("eventid") String eventId, @CookieValue("username") String usernname){
-        return "Registra l'utente ad un evento";
+    public ResponseEntity<EventView> joinEvent(@PathVariable("eventid") UUID eventId, @CookieValue("username") String usernname){
+        return new ResponseEntity<>(eventService.joinEvent(eventId, usernname), HttpStatus.CREATED);
     }
 
     @PostMapping("/unjoin/{eventid}")
