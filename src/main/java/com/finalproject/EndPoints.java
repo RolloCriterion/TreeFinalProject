@@ -52,8 +52,8 @@ public class EndPoints {
     }
 
     @PostMapping("/join/{eventid}")
-    public ResponseEntity<EventView> joinEvent(@PathVariable("eventid") UUID eventId, @CookieValue("username") String usernname){
-        return new ResponseEntity<>(eventService.joinEvent(eventId, usernname), HttpStatus.CREATED);
+    public ResponseEntity<EventView> joinEvent(@PathVariable("eventid") UUID eventId, @CookieValue("username") String username){
+        return new ResponseEntity<>(eventService.joinEvent(eventId, username), HttpStatus.CREATED);
     }
 
     @PostMapping("/unjoin/{eventid}")
@@ -62,8 +62,13 @@ public class EndPoints {
     }
 
     @PostMapping("/event")
-    public String createEvent(@RequestBody EventView eventView, @CookieValue("username") String usernname){
-        return "Crea un evento sulla piattaforma";
+    public ResponseEntity<EventView> createEvent(@RequestBody EventView eventView, @CookieValue("username") String username){
+        EventView eventViewNew = eventService.createEvent(eventView, username);
+        if(eventViewNew != null){
+            return new ResponseEntity<>(eventViewNew, HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
     }
 
     @GetMapping("/event/{eventid}")

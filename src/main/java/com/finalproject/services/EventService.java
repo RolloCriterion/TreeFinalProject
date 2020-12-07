@@ -8,6 +8,7 @@ import com.finalproject.repo.UserRepo;
 import com.finalproject.views.EventView;
 import com.finalproject.views.Gender;
 import com.finalproject.views.UserView;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -59,14 +60,15 @@ public class EventService {
                 eventEntity.getCapacity());
     }
 
-    public UserEntity convertFromViewToEntity(UserView userView){
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUsername(userView.getUsername());
-        userEntity.setName(userView.getName());
-        userEntity.setSurname(userView.getSurname());
-        userEntity.setBirthDate(userView.getBirthDate());
-        userEntity.setGender(userView.getGender().name());
-        userEntity.setPassword(userView.getPassword());
-        return userEntity;
+    public EventEntity convertFromViewToEntity(EventView eventView, String username){
+        UserEntity userEntity = userRepo.findUserEntityByUsername(username);
+        EventEntity eventEntity = new EventEntity();
+        eventEntity.setEventid(eventView.getEventid());
+        eventEntity.setName(eventView.getName());
+        eventEntity.setDate(eventView.getDate());
+        eventEntity.setOwner(userEntity);
+        eventEntity.setCapacity(eventView.getCapacity());
+
+        return eventEntity;
     }
 }

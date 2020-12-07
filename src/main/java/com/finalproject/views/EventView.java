@@ -59,4 +59,12 @@ public class EventView {
     public void setCapacity(Integer capacity) {
         this.capacity = capacity;
     }
+
+    public Boolean getOwned() {
+        return owned;
+    }
+
+    public void setOwned(Boolean owned) {
+        this.owned = owned;
+    }
 }
