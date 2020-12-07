@@ -8,6 +8,7 @@ import com.finalproject.repo.CookieRepo;
 import com.finalproject.repo.EventRepo;
 import com.finalproject.repo.UserRepo;
 import com.finalproject.views.EventView;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,8 @@ public class EventService {
     public List<EventView> getActiveEvents(String username){
         if(cookieRepo.existsById(username)){
             List<EventEntity> eventEntityList = eventRepo.findAllByDateIsAfter(Timestamp.valueOf(LocalDateTime.now()));
-            return eventEntityList.stream().map(e->convertFromEntityToView(e, username)).collect(Collectors.toList());
+            UserEntity userEntity = userRepo.findUserEntityByUsername(username);
+            return eventEntityList.stream().filter(e->!e.getUserEntityList().contains(userEntity)).map(e->convertFromEntityToView(e, username)).collect(Collectors.toList());
         }else{
             return null;
         }
@@ -46,13 +48,23 @@ public class EventService {
     }
 
     public EventView unjoinEvent(UUID eventid, String username){
+        System.out.println(eventid);
         if(cookieRepo.existsById(username)) {
             if (eventRepo.existsById(eventid)) {
                 UserEntity userEntity = userRepo.findUserEntityByUsername(username);
                 EventEntity eventEntity = eventRepo.findEventEntityByEventid(eventid);
                 userEntity.removeEvent(eventEntity);
-                //eventRepo.delete(eventEntity);
+                eventRepo.save(eventEntity);
                 return convertFromEntityToView(eventEntity, username);
+            }
+        }
+        return null;
+    }
+
+    public EventView getEventDetails(UUID eventid, String username){
+        if(cookieRepo.existsById(username)) {
+            if (eventRepo.existsById(eventid)) {
+                return convertFromEntityToView(eventRepo.findEventEntityByEventid(eventid), username);
             }
         }
         return null;
@@ -63,11 +75,7 @@ public class EventService {
             if(!eventRepo.existsById(eventView.getEventid())){
                 EventEntity eventEntity = convertFromViewToEntity(eventView, cookieUser);
                 eventRepo.save(eventEntity);
-                try {
-                    return joinEvent(eventView.getEventid(), cookieUser);
-                }catch (ImpossibleToJoinEventException e){
-                    throw new ImpossibleToJoinEventException();
-                }
+                return joinEvent(eventView.getEventid(), cookieUser);
             }
         }
         throw new ImpossibileToCreateEventException();

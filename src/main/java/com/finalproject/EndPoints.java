@@ -63,6 +63,7 @@ public class EndPoints {
 
     @PostMapping("/unjoin/{eventid}")
     public ResponseEntity<EventView> unjoinEvent(@PathVariable("eventid") UUID eventId, @CookieValue("username") String username){
+        System.out.println(eventId);
         EventView eventView = eventService.unjoinEvent(eventId, username);
         if(eventView!=null){
             return new ResponseEntity<>(eventView, HttpStatus.CREATED);
@@ -80,9 +81,13 @@ public class EndPoints {
     }
 
     @GetMapping("/event/{eventid}")
-    public ResponseEntity<EventView> getEventDetails(@PathVariable("eventid") String eventId, @CookieValue("username") String usernname){
-        //return new ResponseEntity<>(eventService.getEventDetails(eventId, usernname), HttpStatus.CREATED);
-        return null;
+    public ResponseEntity<EventView> getEventDetails(@PathVariable("eventid") UUID eventId, @CookieValue("username") String username){
+        EventView eventView = eventService.getEventDetails(eventId, username);
+        if(eventView!=null){
+            return new ResponseEntity<>(eventView, HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
     }
 
     @DeleteMapping("/event/{eventid}")
