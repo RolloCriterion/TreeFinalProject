@@ -57,8 +57,8 @@ public class EndPoints {
     }
 
     @PostMapping("/unjoin/{eventid}")
-    public String unjoinEvent(@PathVariable("eventid") String eventId, @CookieValue("username") String usernname){
-        return "Annulla la registrazione dell'utente ad un evento";
+    public ResponseEntity<EventView> unjoinEvent(@PathVariable("eventid") String eventId, @CookieValue("username") String usernname){
+        return new ResponseEntity<>(eventService.unjoinEvent(eventId, usernname), HttpStatus.CREATED);
     }
 
     @PostMapping("/event")
@@ -72,18 +72,17 @@ public class EndPoints {
     }
 
     @GetMapping("/event/{eventid}")
-    public String getEventDetails(@PathVariable("eventid") String eventId, @CookieValue("username") String usernname){
-        return "Restituisce le informazioni dettagliate di un evento.";
+    public ResponseEntity<EventView> getEventDetails(@PathVariable("eventid") String eventId, @CookieValue("username") String usernname){
+        return new ResponseEntity<>(eventService.getEventDetails(eventId, usernname), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/event/{eventid}")
-    public String cancelEvent(@PathVariable("eventid") String eventId, @CookieValue("username") String usernname){
-        return "Permette solo al creatore di un evento di annullarlo.";
+    public ResponseEntity<EventView> cancelEvent(@PathVariable("eventid") String eventId, @CookieValue("username") String usernname){
+        return new ResponseEntity<>(eventService.cancelEvent(eventId, usernname), HttpStatus.CREATED);
     }
 
     @GetMapping("/user/events")
-    public List<EventService> getUserEvents(@RequestBody EventView eventView, @CookieValue("username") String usernname){
-        //Restituisce una lista con gli eventi creati dall'utente e quelli a cui ha partecipato. Solo gli eventi futuri, non quelli passati
-        return null;
+    public ResponseEntity<List<EventView>> getUserEvents(@CookieValue("username") String usernname){
+        return new ResponseEntity<>(eventService.getUserEvents(usernname), HttpStatus.CREATED);;
     }
 }
