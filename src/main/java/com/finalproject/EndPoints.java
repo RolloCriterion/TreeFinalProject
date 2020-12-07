@@ -24,8 +24,13 @@ public class EndPoints {
     @PostMapping("/user")
     public ResponseEntity<UserView> signUpUser(@RequestBody UserView userView, HttpServletResponse response){
         Cookie cookie = new Cookie("username", userView.getUsername());
-        response.addCookie(cookie);
-        return new ResponseEntity<>(userService.signin(userView, cookie), HttpStatus.CREATED);
+        UserView userViewSign = userService.signin(userView, cookie);
+        if(userViewSign != null){
+            response.addCookie(cookie);
+            return new ResponseEntity<>(userViewSign, HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
     }
 
     @GetMapping("/login")
