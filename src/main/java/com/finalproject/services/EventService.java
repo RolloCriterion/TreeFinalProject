@@ -45,6 +45,19 @@ public class EventService {
         throw new ImpossibleToJoinEventException();
     }
 
+    public EventView unjoinEvent(UUID eventid, String username){
+        if(cookieRepo.existsById(username)) {
+            if (eventRepo.existsById(eventid)) {
+                UserEntity userEntity = userRepo.findUserEntityByUsername(username);
+                EventEntity eventEntity = eventRepo.findEventEntityByEventid(eventid);
+                userEntity.removeEvent(eventEntity);
+                //eventRepo.delete(eventEntity);
+                return convertFromEntityToView(eventEntity, username);
+            }
+        }
+        return null;
+    }
+
     public EventView createEvent(EventView eventView, String cookieUser) throws ImpossibileToCreateEventException, ImpossibleToJoinEventException {
         if(cookieRepo.existsById(cookieUser)){
             if(!eventRepo.existsById(eventView.getEventid())){
