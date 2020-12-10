@@ -91,6 +91,7 @@ public class EndPoints {
 
     @DeleteMapping("/event/{eventid}")
     public ResponseEntity<EventView> cancelEvent(@PathVariable("eventid") UUID eventId, @CookieValue("username") String username){
+        System.out.println(eventId);
         EventView eventView = eventService.cancelEvent(eventId, username);
         if(eventView!=null){
             return new ResponseEntity<>(eventView, HttpStatus.OK);

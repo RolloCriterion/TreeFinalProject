@@ -21,7 +21,7 @@ public class EventEntity {
     private String place;
     private Integer capacity;
 
-    @ManyToMany(mappedBy = "eventEntityList")
+    @ManyToMany(mappedBy = "eventEntityList", cascade = CascadeType.REMOVE)
     private List<UserEntity> userEntityList = new ArrayList<>();
 
     public List<UserEntity> getUserEntityList() {
