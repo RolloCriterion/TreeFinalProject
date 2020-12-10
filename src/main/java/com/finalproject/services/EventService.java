@@ -31,7 +31,11 @@ public class EventService {
         if (cookieRepo.existsById(username)) {
             List<EventEntity> eventEntityList = eventRepo.findAllByDateIsAfter(Timestamp.valueOf(LocalDateTime.now()));
             UserEntity userEntity = userRepo.findUserEntityByUsername(username);
-            return eventEntityList.stream().filter(e -> !e.getUserEntityList().contains(userEntity)).map(e -> convertFromEntityToView(e, username)).collect(Collectors.toList());
+            return eventEntityList.stream()
+                    .filter(e -> !e.getUserEntityList().contains(userEntity))
+                    .filter(e->e.getUserEntityList().size() < e.getCapacity())
+                    .map(e -> convertFromEntityToView(e, username))
+                    .collect(Collectors.toList());
         } else {
             return null;
         }

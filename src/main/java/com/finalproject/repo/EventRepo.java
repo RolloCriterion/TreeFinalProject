@@ -11,5 +11,4 @@ import java.util.UUID;
 public interface EventRepo extends CrudRepository<EventEntity, UUID> {
     List<EventEntity> findAllByDateIsAfter(Timestamp timestamp);
     EventEntity findEventEntityByEventid(UUID eventid);
-    EventEntity findEventEntityByOwner(UserEntity userEntity);
 }
