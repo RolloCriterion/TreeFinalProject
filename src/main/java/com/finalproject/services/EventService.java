@@ -93,12 +93,15 @@ public class EventService {
         throw new ImpossibileToCreateEventException();
     }
 
-    public EventView cancelEvent(EventView eventView, String cookieUser) {
+    public EventView cancelEvent(UUID eventid, String cookieUser) {
         if (cookieRepo.existsById(cookieUser)) {
-            if (eventRepo.existsById(eventView.getEventid())) {
+            if (eventRepo.existsById(eventid)) {
                 UserEntity userEntity = userRepo.findUserEntityByUsername(cookieUser);
-                EventEntity eventEntity = eventRepo.findEventEntityByOwner(userEntity);
+                EventEntity eventEntity = eventRepo.findEventEntityByEventid(eventid);
+                EventView eventView = convertFromEntityToView(eventEntity, cookieUser);
+                userEntity.removeEvent(eventEntity);
                 eventRepo.delete(eventEntity);
+                return eventView;
             }
         }
         return null;

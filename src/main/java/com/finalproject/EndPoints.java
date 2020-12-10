@@ -90,9 +90,13 @@ public class EndPoints {
     }
 
     @DeleteMapping("/event/{eventid}")
-    public ResponseEntity<EventView> cancelEvent(@PathVariable("eventid") String eventId, @CookieValue("username") String usernname){
-        //return new ResponseEntity<>(eventService.cancelEvent(eventId, usernname), HttpStatus.CREATED);
-        return null;
+    public ResponseEntity<EventView> cancelEvent(@PathVariable("eventid") UUID eventId, @CookieValue("username") String username){
+        EventView eventView = eventService.cancelEvent(eventId, username);
+        if(eventView!=null){
+            return new ResponseEntity<>(eventView, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
     }
 
     @GetMapping("/user/events")
