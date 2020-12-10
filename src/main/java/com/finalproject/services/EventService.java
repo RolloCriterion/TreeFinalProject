@@ -20,33 +20,36 @@ import java.util.stream.Collectors;
 
 @Service
 public class EventService {
-    @Autowired EventRepo eventRepo;
-    @Autowired CookieRepo cookieRepo;
-    @Autowired UserRepo userRepo;
+    @Autowired
+    EventRepo eventRepo;
+    @Autowired
+    CookieRepo cookieRepo;
+    @Autowired
+    UserRepo userRepo;
 
-    public List<EventView> getActiveEvents(String username){
-        if(cookieRepo.existsById(username)){
+    public List<EventView> getActiveEvents(String username) {
+        if (cookieRepo.existsById(username)) {
             List<EventEntity> eventEntityList = eventRepo.findAllByDateIsAfter(Timestamp.valueOf(LocalDateTime.now()));
             UserEntity userEntity = userRepo.findUserEntityByUsername(username);
-            return eventEntityList.stream().filter(e->!e.getUserEntityList().contains(userEntity)).map(e->convertFromEntityToView(e, username)).collect(Collectors.toList());
-        }else{
+            return eventEntityList.stream().filter(e -> !e.getUserEntityList().contains(userEntity)).map(e -> convertFromEntityToView(e, username)).collect(Collectors.toList());
+        } else {
             return null;
         }
     }
 
-    public List<EventView> getUserEvents(String username){
-        if(cookieRepo.existsById(username)){
+    public List<EventView> getUserEvents(String username) {
+        if (cookieRepo.existsById(username)) {
             List<EventEntity> eventEntityList = eventRepo.findAllByDateIsAfter(Timestamp.valueOf(LocalDateTime.now()));
             UserEntity userEntity = userRepo.findUserEntityByUsername(username);
-            return eventEntityList.stream().filter(e->e.getUserEntityList().contains(userEntity)).map(e->convertFromEntityToView(e, username)).collect(Collectors.toList());
-        }else{
+            return eventEntityList.stream().filter(e -> e.getUserEntityList().contains(userEntity)).map(e -> convertFromEntityToView(e, username)).collect(Collectors.toList());
+        } else {
             return null;
         }
     }
 
     public EventView joinEvent(UUID eventid, String username) throws ImpossibleToJoinEventException {
-        if(cookieRepo.existsById(username)){
-            if(eventRepo.existsById(eventid)){
+        if (cookieRepo.existsById(username)) {
+            if (eventRepo.existsById(eventid)) {
                 UserEntity userEntity = userRepo.findUserEntityByUsername(username);
                 EventEntity eventEntity = eventRepo.findEventEntityByEventid(eventid);
                 userEntity.addEvent(eventEntity);
@@ -57,9 +60,8 @@ public class EventService {
         throw new ImpossibleToJoinEventException();
     }
 
-    public EventView unjoinEvent(UUID eventid, String username){
-        System.out.println(eventid);
-        if(cookieRepo.existsById(username)) {
+    public EventView unjoinEvent(UUID eventid, String username) {
+        if (cookieRepo.existsById(username)) {
             if (eventRepo.existsById(eventid)) {
                 UserEntity userEntity = userRepo.findUserEntityByUsername(username);
                 EventEntity eventEntity = eventRepo.findEventEntityByEventid(eventid);
@@ -71,8 +73,8 @@ public class EventService {
         return null;
     }
 
-    public EventView getEventDetails(UUID eventid, String username){
-        if(cookieRepo.existsById(username)) {
+    public EventView getEventDetails(UUID eventid, String username) {
+        if (cookieRepo.existsById(username)) {
             if (eventRepo.existsById(eventid)) {
                 return convertFromEntityToView(eventRepo.findEventEntityByEventid(eventid), username);
             }
@@ -81,14 +83,25 @@ public class EventService {
     }
 
     public EventView createEvent(EventView eventView, String cookieUser) throws ImpossibileToCreateEventException, ImpossibleToJoinEventException {
-        if(cookieRepo.existsById(cookieUser)){
-            if(!eventRepo.existsById(eventView.getEventid())){
+        if (cookieRepo.existsById(cookieUser)) {
+            if (!eventRepo.existsById(eventView.getEventid())) {
                 EventEntity eventEntity = convertFromViewToEntity(eventView, cookieUser);
                 eventRepo.save(eventEntity);
                 return joinEvent(eventView.getEventid(), cookieUser);
             }
         }
         throw new ImpossibileToCreateEventException();
+    }
+
+    public EventView cancelEvent(EventView eventView, String cookieUser) {
+        if (cookieRepo.existsById(cookieUser)) {
+            if (eventRepo.existsById(eventView.getEventid())) {
+                UserEntity userEntity = userRepo.findUserEntityByUsername(cookieUser);
+                EventEntity eventEntity = eventRepo.findEventEntityByOwner(userEntity);
+                eventRepo.delete(eventEntity);
+            }
+        }
+        return null;
     }
 
     public EventView convertFromEntityToView(EventEntity eventEntity, String username){
