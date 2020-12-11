@@ -17,10 +17,17 @@ import javax.servlet.http.Cookie;
 @Service
 public class UserService {
 
-    @Autowired SecurityService securityService;
-    @Autowired CookieService cookieService;
-    @Autowired UserRepo userRepo;
-    @Autowired CookieRepo cookieRepo;
+    private SecurityService securityService;
+    private CookieService cookieService;
+    private UserRepo userRepo;
+    private CookieRepo cookieRepo;
+
+    public UserService(@Autowired SecurityService securityService, @Autowired CookieService cookieService, @Autowired UserRepo userRepo, @Autowired CookieRepo cookieRepo){
+        this.securityService = securityService;
+        this.cookieService = cookieService;
+        this.userRepo = userRepo;
+        this.cookieRepo = cookieRepo;
+    }
 
     public UserView signin(UserView userView, Cookie cookie) throws UserAlreadyExistException {
         if(userRepo.findUserEntityByUsername(userView.getUsername())==null){

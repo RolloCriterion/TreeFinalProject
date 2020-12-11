@@ -18,8 +18,13 @@ import java.util.UUID;
 @RestController
 public class EndPoints {
 
-    @Autowired UserService userService;
-    @Autowired EventService eventService;
+    private UserService userService;
+    private EventService eventService;
+
+    public EndPoints(@Autowired UserService userService, @Autowired EventService eventService){
+        this.userService = userService;
+        this.eventService = eventService;
+    }
 
     @PostMapping("/user")
     public ResponseEntity<UserView> signUpUser(@RequestBody UserView userView, HttpServletResponse response){
@@ -84,7 +89,7 @@ public class EndPoints {
     @GetMapping("/event/{eventid}")
     public ResponseEntity<EventView> getEventDetails(@PathVariable("eventid") UUID eventId, @CookieValue("username") String username){
         try {
-            return new ResponseEntity<>(eventService.getEventDetails(eventId, username), HttpStatus.CREATED);
+            return new ResponseEntity<>(eventService.getEventDetails(eventId, username), HttpStatus.OK);
         }catch (ImpossibleToGetEventDetails e){
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
@@ -93,7 +98,7 @@ public class EndPoints {
     @DeleteMapping("/event/{eventid}")
     public ResponseEntity<EventView> cancelEvent(@PathVariable("eventid") UUID eventId, @CookieValue("username") String username){
         try {
-            return new ResponseEntity<>(eventService.cancelEvent(eventId, username), HttpStatus.CREATED);
+            return new ResponseEntity<>(eventService.cancelEvent(eventId, username), HttpStatus.OK);
         }catch (ImpossibleToCancelEventException e){
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }

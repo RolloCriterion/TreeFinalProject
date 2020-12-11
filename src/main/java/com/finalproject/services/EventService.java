@@ -19,12 +19,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class EventService {
-    @Autowired
-    EventRepo eventRepo;
-    @Autowired
-    CookieRepo cookieRepo;
-    @Autowired
-    UserRepo userRepo;
+
+    private EventRepo eventRepo;
+    private UserRepo userRepo;
+    private CookieRepo cookieRepo;
+
+    public EventService(@Autowired EventRepo eventRepo, @Autowired UserRepo userRepo, @Autowired CookieRepo cookieRepo){
+        this.eventRepo = eventRepo;
+        this.userRepo = userRepo;
+        this.cookieRepo = cookieRepo;
+    }
 
     public List<EventView> getActiveEvents(String username) throws UserNotLoggedException {
         if (cookieRepo.existsById(username)) {
@@ -98,6 +102,12 @@ public class EventService {
         if (cookieRepo.existsById(cookieUser)) {
             if (eventRepo.existsById(eventid)) {
                 EventEntity eventEntity = eventRepo.findEventEntityByEventid(eventid);
+
+                for (UserEntity userEntity : eventEntity.getUserEntityList()) {
+                    userEntity.getEventEntityList().remove(eventEntity);
+                }
+                eventEntity.getUserEntityList().clear();
+
                 EventView eventView = convertFromEntityToView(eventEntity, cookieUser);
                 eventRepo.delete(eventEntity);
                 return eventView;
