@@ -1,7 +1,6 @@
 package com.finalproject.services;
 
-import com.finalproject.exceptions.ImpossibileToCreateEventException;
-import com.finalproject.exceptions.ImpossibleToJoinEventException;
+import com.finalproject.exceptions.*;
 import com.finalproject.entities.EventEntity;
 import com.finalproject.entities.UserEntity;
 import com.finalproject.repo.CookieRepo;
@@ -27,7 +26,7 @@ public class EventService {
     @Autowired
     UserRepo userRepo;
 
-    public List<EventView> getActiveEvents(String username) {
+    public List<EventView> getActiveEvents(String username) throws UserNotLoggedException {
         if (cookieRepo.existsById(username)) {
             List<EventEntity> eventEntityList = eventRepo.findAllByDateIsAfter(Timestamp.valueOf(LocalDateTime.now()));
             UserEntity userEntity = userRepo.findUserEntityByUsername(username);
@@ -36,19 +35,17 @@ public class EventService {
                     .filter(e->e.getUserEntityList().size() < e.getCapacity())
                     .map(e -> convertFromEntityToView(e, username))
                     .collect(Collectors.toList());
-        } else {
-            return null;
         }
+        throw new UserNotLoggedException();
     }
 
-    public List<EventView> getUserEvents(String username) {
+    public List<EventView> getUserEvents(String username) throws UserNotLoggedException {
         if (cookieRepo.existsById(username)) {
             List<EventEntity> eventEntityList = eventRepo.findAllByDateIsAfter(Timestamp.valueOf(LocalDateTime.now()));
             UserEntity userEntity = userRepo.findUserEntityByUsername(username);
             return eventEntityList.stream().filter(e -> e.getUserEntityList().contains(userEntity)).map(e -> convertFromEntityToView(e, username)).collect(Collectors.toList());
-        } else {
-            return null;
         }
+        throw new UserNotLoggedException();
     }
 
     public EventView joinEvent(UUID eventid, String username) throws ImpossibleToJoinEventException {
@@ -64,7 +61,7 @@ public class EventService {
         throw new ImpossibleToJoinEventException();
     }
 
-    public EventView unjoinEvent(UUID eventid, String username) {
+    public EventView unjoinEvent(UUID eventid, String username) throws ImpossibleToUnjoinEventException {
         if (cookieRepo.existsById(username)) {
             if (eventRepo.existsById(eventid)) {
                 UserEntity userEntity = userRepo.findUserEntityByUsername(username);
@@ -74,16 +71,16 @@ public class EventService {
                 return convertFromEntityToView(eventEntity, username);
             }
         }
-        return null;
+        throw new ImpossibleToUnjoinEventException();
     }
 
-    public EventView getEventDetails(UUID eventid, String username) {
+    public EventView getEventDetails(UUID eventid, String username) throws ImpossibleToGetEventDetails {
         if (cookieRepo.existsById(username)) {
             if (eventRepo.existsById(eventid)) {
                 return convertFromEntityToView(eventRepo.findEventEntityByEventid(eventid), username);
             }
         }
-        return null;
+        throw new ImpossibleToGetEventDetails();
     }
 
     public EventView createEvent(EventView eventView, String cookieUser) throws ImpossibileToCreateEventException, ImpossibleToJoinEventException {
@@ -97,7 +94,7 @@ public class EventService {
         throw new ImpossibileToCreateEventException();
     }
 
-    public EventView cancelEvent(UUID eventid, String cookieUser) {
+    public EventView cancelEvent(UUID eventid, String cookieUser) throws ImpossibleToCancelEventException {
         if (cookieRepo.existsById(cookieUser)) {
             if (eventRepo.existsById(eventid)) {
                 EventEntity eventEntity = eventRepo.findEventEntityByEventid(eventid);
@@ -106,7 +103,7 @@ public class EventService {
                 return eventView;
             }
         }
-        return null;
+        throw new ImpossibleToCancelEventException();
     }
 
     public EventView convertFromEntityToView(EventEntity eventEntity, String username){

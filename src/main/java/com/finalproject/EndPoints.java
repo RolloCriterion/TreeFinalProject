@@ -1,7 +1,6 @@
 package com.finalproject;
 
-import com.finalproject.exceptions.ImpossibileToCreateEventException;
-import com.finalproject.exceptions.ImpossibleToJoinEventException;
+import com.finalproject.exceptions.*;
 import com.finalproject.services.EventService;
 import com.finalproject.services.UserService;
 import com.finalproject.views.EventView;
@@ -25,11 +24,11 @@ public class EndPoints {
     @PostMapping("/user")
     public ResponseEntity<UserView> signUpUser(@RequestBody UserView userView, HttpServletResponse response){
         Cookie cookie = new Cookie("username", userView.getUsername());
-        UserView userViewSign = userService.signin(userView, cookie);
-        if(userViewSign != null){
+        try {
+            UserView userViewNew = userService.signin(userView, cookie);
             response.addCookie(cookie);
-            return new ResponseEntity<>(userViewSign, HttpStatus.CREATED);
-        }else{
+            return new ResponseEntity<>(userViewNew, HttpStatus.CREATED);
+        } catch (UserAlreadyExistException e) {
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
     }
@@ -37,19 +36,22 @@ public class EndPoints {
     @GetMapping("/login")
     public ResponseEntity<UserView> logIn(@RequestParam(name="username") String username, @RequestParam(name="password") String password, HttpServletResponse response){
         Cookie cookie = new Cookie("username", username);
-        UserView userView = userService.login(username, password, cookie);
-        if(userView != null){
+        try {
+            UserView userView = userService.login(username, password, cookie);
             response.addCookie(cookie);
             return new ResponseEntity<>(userView, HttpStatus.OK);
-        }else{
+        } catch (UserNotExistException | UserWrongPasswordException e) {
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
-
     }
 
     @GetMapping("/events")
     public ResponseEntity<List<EventView>> getActiveEvents(@CookieValue("username") String username){
-        return new ResponseEntity<>(eventService.getActiveEvents(username), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(eventService.getActiveEvents(username), HttpStatus.OK);
+        } catch (UserNotLoggedException e) {
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
     }
 
     @PostMapping("/join/{eventid}")
@@ -63,11 +65,11 @@ public class EndPoints {
 
     @PostMapping("/unjoin/{eventid}")
     public ResponseEntity<EventView> unjoinEvent(@PathVariable("eventid") UUID eventId, @CookieValue("username") String username){
-        EventView eventView = eventService.unjoinEvent(eventId, username);
-        if(eventView!=null){
-            return new ResponseEntity<>(eventView, HttpStatus.CREATED);
+        try {
+            return new ResponseEntity<>(eventService.unjoinEvent(eventId, username), HttpStatus.CREATED);
+        }catch (ImpossibleToUnjoinEventException e){
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
-        return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
     }
 
     @PostMapping("/event")
@@ -81,27 +83,28 @@ public class EndPoints {
 
     @GetMapping("/event/{eventid}")
     public ResponseEntity<EventView> getEventDetails(@PathVariable("eventid") UUID eventId, @CookieValue("username") String username){
-        EventView eventView = eventService.getEventDetails(eventId, username);
-        if(eventView!=null){
-            return new ResponseEntity<>(eventView, HttpStatus.CREATED);
-        }else{
+        try {
+            return new ResponseEntity<>(eventService.getEventDetails(eventId, username), HttpStatus.CREATED);
+        }catch (ImpossibleToGetEventDetails e){
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
     }
 
     @DeleteMapping("/event/{eventid}")
     public ResponseEntity<EventView> cancelEvent(@PathVariable("eventid") UUID eventId, @CookieValue("username") String username){
-        System.out.println(eventId);
-        EventView eventView = eventService.cancelEvent(eventId, username);
-        if(eventView!=null){
-            return new ResponseEntity<>(eventView, HttpStatus.OK);
-        }else{
+        try {
+            return new ResponseEntity<>(eventService.cancelEvent(eventId, username), HttpStatus.CREATED);
+        }catch (ImpossibleToCancelEventException e){
             return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
         }
     }
 
     @GetMapping("/user/events")
     public ResponseEntity<List<EventView>> getUserEvents(@CookieValue("username") String username){
-        return new ResponseEntity<>(eventService.getUserEvents(username), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(eventService.getUserEvents(username), HttpStatus.OK);
+        } catch (UserNotLoggedException e) {
+            return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+        }
     }
 }

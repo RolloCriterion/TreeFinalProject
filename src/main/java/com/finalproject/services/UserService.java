@@ -2,6 +2,9 @@ package com.finalproject.services;
 
 import com.finalproject.entities.CookieEntity;
 import com.finalproject.entities.UserEntity;
+import com.finalproject.exceptions.UserAlreadyExistException;
+import com.finalproject.exceptions.UserNotExistException;
+import com.finalproject.exceptions.UserWrongPasswordException;
 import com.finalproject.repo.CookieRepo;
 import com.finalproject.repo.UserRepo;
 import com.finalproject.views.Gender;
@@ -15,32 +18,31 @@ import javax.servlet.http.Cookie;
 public class UserService {
 
     @Autowired SecurityService securityService;
+    @Autowired CookieService cookieService;
     @Autowired UserRepo userRepo;
     @Autowired CookieRepo cookieRepo;
 
-    public UserView signin(UserView userView, Cookie cookie){
+    public UserView signin(UserView userView, Cookie cookie) throws UserAlreadyExistException {
         if(userRepo.findUserEntityByUsername(userView.getUsername())==null){
             userView.setPassword(securityService.computeHash(userView.getPassword()));
             userRepo.save(convertFromViewToEntity(userView));
-            cookieRepo.save(cookieFromViewToEntity(cookie));
+            cookieRepo.save(cookieService.cookieFromViewToEntity(cookie));
             return userView;
         }
-        return null;
+        throw new UserAlreadyExistException();
     }
 
-    public UserView login(String username, String password, Cookie cookie){
-        if(userRepo.findUserEntityByUsernameAndPassword(username, securityService.computeHash(password)) != null){
-            cookieRepo.save(cookieFromViewToEntity(cookie));
-            return convertFromEntityToView(userRepo.findUserEntityByUsername(username));
+    public UserView login(String username, String password, Cookie cookie) throws UserNotExistException, UserWrongPasswordException{
+        if(userRepo.findUserEntityByUsername(username) != null){
+            if(userRepo.findUserEntityByUsernameAndPassword(username, securityService.computeHash(password)) != null){
+                cookieRepo.save(cookieService.cookieFromViewToEntity(cookie));
+                return convertFromEntityToView(userRepo.findUserEntityByUsername(username));
+            }
+            throw new UserWrongPasswordException();
         }
-        return null;
+        throw new UserNotExistException();
     }
 
-    public CookieEntity cookieFromViewToEntity(Cookie cookie){
-        CookieEntity cookieEntity = new CookieEntity();
-        cookieEntity.setUsername(cookie.getValue());
-        return cookieEntity;
-    }
 
     public UserView convertFromEntityToView(UserEntity userEntity){
         return new UserView(userEntity.getUsername(),
